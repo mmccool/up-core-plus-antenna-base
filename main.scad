@@ -37,14 +37,124 @@ pcb_xi = 2.5;
 pcb_xo = 19;
 pcb_ys = 49;
 pcb_yi = 0;
-module assembly() {
+module standoffs() {
   translate([-pcb_xs/2+pcb_xi,-pcb_ys/2+pcb_yi,-standoff_h]) standoff();
   translate([-pcb_xs/2+pcb_xi, pcb_ys/2+pcb_yi,-standoff_h]) standoff();
   translate([ pcb_xo,-pcb_ys/2+pcb_yi,-standoff_h]) standoff();
   translate([ pcb_xo, pcb_ys/2+pcb_yi,-standoff_h]) standoff();
   translate([ pcb_xs/2+pcb_xi,-pcb_ys/2+pcb_yi,-standoff_h]) standoff();
   translate([ pcb_xs/2+pcb_xi, pcb_ys/2+pcb_yi,-standoff_h]) standoff();
+}
+
+base_cr = 10/2;
+base_ir = standoff_or + 1;
+base_iir = 1;
+base_sm = 50;
+base_h = 5;
+base_hh = 2;
+base_H = base_h + standoff_h;
+base_br = 2.6/2;
+base_csh = 2.5;
+base_csr = 5/2;
+base_csdr = base_csr - base_br;
+module bolt_hole() {
+  translate([0,0,-1]) 
+    cylinder(r=base_br,h=base_h+2,$fn=base_sm);
+  translate([0,0,-1]) 
+    cylinder(r=base_csr,h=base_csh+1-base_csdr,$fn=base_sm);
+  translate([0,0,base_csh-base_csdr-10*eps]) 
+    cylinder(r1=base_csr,r2=base_br,h=base_csdr,$fn=base_sm);
+}
+sma_r = 6.27/2 + tol;
+sma_f = 6.3-5.83;
+sma_yo = 14;
+module base() {
+  difference() {
+    // exterior
+    hull() {
+      translate([0,0,-base_H]) {
+        translate([-pcb_xs/2+pcb_xi,-pcb_ys/2+pcb_yi,0]) 
+          cylinder(r=base_cr,h=base_H,$fn=base_sm);
+        translate([-pcb_xs/2+pcb_xi, pcb_ys/2+pcb_yi,0]) 
+          cylinder(r=base_cr,h=base_H,$fn=base_sm);
+        translate([ pcb_xs/2+pcb_xi,-pcb_ys/2+pcb_yi,0]) 
+          cylinder(r=base_cr,h=base_H,$fn=base_sm);
+        translate([ pcb_xs/2+pcb_xi, pcb_ys/2+pcb_yi,0]) 
+          cylinder(r=base_cr,h=base_H,$fn=base_sm);
+      }
+    }
+    // cavity
+    hull() {
+      translate([0,0,-standoff_h]) {
+        translate([-pcb_xs/2+pcb_xi,-pcb_ys/2+pcb_yi,0]) 
+          cylinder(r=base_ir,h=standoff_h+1,$fn=base_sm);
+        translate([-pcb_xs/2+pcb_xi, pcb_ys/2+pcb_yi,0]) 
+          cylinder(r=base_ir,h=standoff_h+1,$fn=base_sm);
+        translate([ pcb_xs/2+pcb_xi,-pcb_ys/2+pcb_yi,0]) 
+          cylinder(r=base_ir,h=standoff_h+1,$fn=base_sm);
+        translate([ pcb_xs/2+pcb_xi, pcb_ys/2+pcb_yi,0]) 
+          cylinder(r=base_ir,h=standoff_h+1,$fn=base_sm);
+      }
+    }
+    // central cavity
+    hull() {
+      translate([0,0,-standoff_h-base_h+base_hh]) {
+        translate([-pcb_xs/2+pcb_xi-base_ir+base_iir+eps,
+                   -pcb_ys/2+pcb_yi+1.5*standoff_or+base_iir,0]) 
+          cylinder(r=base_iir,h=standoff_h+1,$fn=base_sm);
+        translate([-pcb_xs/2+pcb_xi-base_ir+base_iir+eps, 
+                    pcb_ys/2+pcb_yi-1.5*standoff_or-base_iir,0]) 
+          cylinder(r=base_iir,h=standoff_h+1,$fn=base_sm);
+        translate([ pcb_xs/2+pcb_xi+base_ir-base_iir-eps,
+                   -pcb_ys/2+pcb_yi+1.5*standoff_or+base_iir,0]) 
+          cylinder(r=base_iir,h=standoff_h+1,$fn=base_sm);
+        translate([ pcb_xs/2+pcb_xi+base_ir-base_iir-eps, 
+                    pcb_ys/2+pcb_yi-1.5*standoff_or-base_iir,0]) 
+          cylinder(r=base_iir,h=standoff_h+1,$fn=base_sm);
+      }
+    }
+    // bolt holes
+    translate([0,0,-standoff_h-base_h-eps]) {
+      translate([-pcb_xs/2+pcb_xi,-pcb_ys/2+pcb_yi,0]) 
+        bolt_hole();
+      translate([-pcb_xs/2+pcb_xi, pcb_ys/2+pcb_yi,0]) 
+        bolt_hole();
+      translate([ pcb_xo,-pcb_ys/2+pcb_yi,0]) 
+        bolt_hole();
+      translate([ pcb_xo, pcb_ys/2+pcb_yi,0]) 
+        bolt_hole();
+      translate([ pcb_xs/2+pcb_xi,-pcb_ys/2+pcb_yi,0]) 
+        bolt_hole();
+      translate([ pcb_xs/2+pcb_xi, pcb_ys/2+pcb_yi,0]) 
+        bolt_hole();
+    }
+    // RTC battery wire notch
+    translate([-pcb_xs/2+3,-9.25,0])
+      rotate([0,-90,0])
+        cylinder(r=3/2,h=10,$fn=20);
+    // SMA holes
+    translate([-pcb_xs/2+3,-sma_yo,-base_H/2])
+      rotate([0,-90,0])
+        difference() {
+          cylinder(r=sma_r,h=10,$fn=30);
+          translate([sma_f-3*sma_r,-sma_r,-1]) cube([2*sma_r,2*sma_r,12]);
+        }
+    translate([-pcb_xs/2+3, sma_yo,-base_H/2])
+      rotate([0,-90,0])
+        difference() {
+          cylinder(r=sma_r,h=10,$fn=30);
+          translate([sma_f-3*sma_r,-sma_r,-1]) cube([2*sma_r,2*sma_r,12]);
+        }
+  }
+}
+
+module assembly() {
   ext();
+  standoffs();
+  //translate([0,0,-0.5]) 
+  //  color([0.5,0.5,0.5,1]) 
+  base();
 }
 
 assembly();
+//base();
