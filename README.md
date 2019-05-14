@@ -1,9 +1,7 @@
 # UP Core Plus Antenna Base
-Base for Aaeon UP Core Plus to mount WiFi antennas.
-3D Printable.  Can work with either stick-on flat internal antennas or
-external RP-SMA antennas. 
-Also provides space to mount RTC battery
-and protects the bottom of the board.
+a 3D printable base for the Aaeon UP Core Plus to mount WiFi antennas.
+Can work with either stick-on flat internal antennas or external RP-SMA antennas. 
+Also provides space to mount RTC battery and protects the bottom of the board.
 
 ## Notes
 * To mount, use four to six M2.5 x 8 bolts, assuming the 9mm spacers that come with the board are used.
