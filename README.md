@@ -1,13 +1,17 @@
 # UP Core Plus Antenna Base
 Base for Aaeon UP Core Plus to mount WiFi antennas.
 3D Printable.  Can work with either stick-on flat internal antennas or
-external RP-SMA antennas. Note that you need antennas and\or RP-SMA
-adapters with the smaller MHF4 connectors.
+external RP-SMA antennas. 
 Also provides space to mount RTC battery
-and protects bottom of the board.
+and protects the bottom of the board.
 To mount, at least four but preferrably six M2.5 x 8 bolts,
 assuming the 9mm spacers that come with the board are used.
-Note that M2.6 bolts will NOT work; they will sort of go partway in, then jam.
+
+## Cautions:
+* The spacers fit snugly inside the case, so you can omit the bolts if you want; the case can be held on by friction.
+* You need internal antennas and\or RP-SMA pigtails with the smaller MHF4 connectors, not (the more common) U.FL connectors.
+* M2.6 bolts will not work; they will sort of go partway in, then jam.  Guess how I found this out...
+* My STLs may have a built-in scale of 94.5% in x and y to correct for my own printer's calibration.  This can be easily adjusted in the OpenSCAD file.  If necessary, rescale for your printer when slicing or re-export the STL from OpenSCAD with a calibration factor suitable for your printer.
 
 ![Perspective Rendering of Base with PCB and Heatsink, Front](pers.png)
 
